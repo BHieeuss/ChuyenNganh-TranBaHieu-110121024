@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HieuEMart.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240806133324_FixProductIdForeignKey")]
-    partial class FixProductIdForeignKey
+    [Migration("20241030132349_MigrationName")]
+    partial class MigrationName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

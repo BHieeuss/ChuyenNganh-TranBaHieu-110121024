@@ -29,7 +29,7 @@ namespace HieuEMart.Controllers
 		}
 		public async Task<IActionResult> Add(int Id)
 		{
-			ProductModel product = await _dataContext.Products.FindAsync(Id);
+			ProductModel product = await _dataContext.Products.FindAsync((long)Id);
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
 			CartItemModel cartItems = cart.Where(c => c.ProductId == Id).FirstOrDefault();
 			if (cartItems == null)
@@ -40,7 +40,8 @@ namespace HieuEMart.Controllers
 			{
 				cartItems.Quantity += 1;
 			}
-			HttpContext.Session.SetJson("Cart", cart);
+            TempData["success"] = "Thêm sản phẩm vào giỏ hàng thành công!";
+            HttpContext.Session.SetJson("Cart", cart);
 			return Redirect(Request.Headers["Referer"].ToString());
 		}
 		public async Task<IActionResult> Decrease(int Id)
