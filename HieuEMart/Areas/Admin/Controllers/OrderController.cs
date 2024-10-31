@@ -22,5 +22,6 @@ namespace HieuEMart.Areas.Admin.Controllers
             var detailsOrder = await _dataContext.OrderDetails.Include(o => o.Product).Where(o => o.OrderCode == ordercode).ToListAsync();
             return View(detailsOrder);
         }
+
     }
 }

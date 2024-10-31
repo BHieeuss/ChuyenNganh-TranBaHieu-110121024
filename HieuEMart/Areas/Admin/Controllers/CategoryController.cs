@@ -99,7 +99,7 @@ namespace HieuEMart.Areas.Admin.Controllers
             }
             return View(category);
         }
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(long Id)
         {
             CategoryModel category = await _dataContext.Categories.FindAsync(Id);
             if (category == null)

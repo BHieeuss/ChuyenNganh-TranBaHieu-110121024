@@ -79,9 +79,9 @@ namespace HieuEMart.Areas.Admin.Models
 
             return View(product);
         }
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            ProductModel product = await _dataContext.Products.FindAsync(Id);
+            ProductModel product = await _dataContext.Products.FindAsync((long)Id);
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
             ViewBag.brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
             return  View(product);
@@ -158,7 +158,7 @@ namespace HieuEMart.Areas.Admin.Models
             }
             return View(product);
         }
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
             if (product == null)

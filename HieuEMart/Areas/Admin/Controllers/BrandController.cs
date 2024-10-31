@@ -58,9 +58,9 @@ namespace HieuEMart.Areas.Admin.Controllers
             }
             return View(brand);
         }
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(long Id)
         {
-            BrandModel category = await _dataContext.Brands.FindAsync(Id);
+            BrandModel category = await _dataContext.Brands.FindAsync((long)Id);
             return View(category);
         }
         [HttpPost]
