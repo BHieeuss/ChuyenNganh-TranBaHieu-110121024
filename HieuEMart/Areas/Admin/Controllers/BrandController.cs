@@ -15,6 +15,7 @@ namespace HieuEMart.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
+        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(p => p.Id).ToListAsync());
