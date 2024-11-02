@@ -25,8 +25,7 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+
           <li class="nav-item">
           </li>
             <li class="nav-item">
@@ -39,25 +38,26 @@
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="/admin/product" class="nav-link">
+                        <a asp-controller="Product" asp-action="Index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Sản phẩm</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="/admin/category" class="nav-link">
+                        <a asp-controller="Category" asp-action="Index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Danh mục</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="/admin/brand" class="nav-link">
+                        <a asp-controller="Brand" asp-action="Index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Thương hiệu</p>
                         </a>
                     </li>
                 </ul>
             </li>
+
           <li class="nav-item">
                 <a asp-controller="Order" asp-action="Index" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -66,12 +66,16 @@
               </p>
             </a>
           </li>
+          
             <li class="nav-item">
                 <a asp-action="Index" asp-controller="user" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
                     <p>Người dùng</p>
                 </a>
             </li>
+
+
+
             <li class="nav-item">
                 <a href="/admin/news" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
