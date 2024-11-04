@@ -1,5 +1,4 @@
-﻿@model IEnumerable<AppUserModel>
-@{
+﻿@{
     ViewData["title"] = "Danh sách Người dùng";
 }
 @section naviheader {
@@ -53,30 +52,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var user in Model)
+                        @foreach (var usersWithRoles in Model)
                         {
                             <tr>
-                                <td>@user.UserName</td>
-                                <td>@user.Email</td>
-                                <td>@user.PhoneNumber</td>
-                                <td></td>
+                                <td>@usersWithRoles.User.UserName</td>
+                                <td>@usersWithRoles.User.Email</td>
+                                <td>@usersWithRoles.User.PhoneNumber</td>
+                                <td>@usersWithRoles.RoleName</td>
                                 <td>
-                                    <a class="btn btn-sm btn-success" asp-action="Edit" asp-controller="User" asp-route-Id="@user.Id">Sửa</a>
-                                    <a class="btn btn-sm btn-danger confirmDeletion" asp-action="Delete" asp-controller="User" asp-route-Id="@user.Id">Xóa</a>
+                                    <a class="btn btn-sm btn-success" asp-action="Edit" asp-controller="User" asp-route-Id="@usersWithRoles.User.Id">Sửa</a>
+                                    <a class="btn btn-sm btn-danger confirmDeletion" asp-action="Delete" asp-controller="User" asp-route-Id="@usersWithRoles.User.Id">Xóa</a>
                                 </td>
                             </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">
-                                Không có bản ghi nào!
-                            </td>
-                        </tr>
-                    }
+                        }     
                 </tbody>
             </table>
         </div>
