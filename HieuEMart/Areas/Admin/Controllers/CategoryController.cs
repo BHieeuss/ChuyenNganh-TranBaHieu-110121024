@@ -1,26 +1,38 @@
 ﻿using HieuEMart.Models;
 using HieuEMart.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HieuEMart.Areas.Admin.Controllers
 {
-	[Area("Admin")]
-	[Authorize]
-	public class CategoryController : Controller
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    public class CategoryController : Controller
 	{
 		private readonly DataContext _dataContext;
 		public CategoryController(DataContext context)
 		{
 			_dataContext = context;
 		}
-		public async Task<IActionResult> Index()
-		{
-			return View(await _dataContext.Categories.OrderByDescending(p => p.Id).ToListAsync());
-		}
+        public async Task<IActionResult> Index(int pg = 1)
+        {
+            List<CategoryModel> category = _dataContext.Categories.ToList();
+
+            const int pageSize = 10;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            int rescCount = category.Count(); //Đếm item
+            var pager = new Paginate(rescCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
+            ViewBag.Pager = pager;
+            return View(data);
+        }
+
         public async Task<IActionResult> Edit(int Id)
         {
             CategoryModel category = await _dataContext.Categories.FindAsync(Id);

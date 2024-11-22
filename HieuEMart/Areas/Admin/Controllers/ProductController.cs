@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HieuEMart.Areas.Admin.Models
 {
 	[Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private readonly DataContext _dataContext;

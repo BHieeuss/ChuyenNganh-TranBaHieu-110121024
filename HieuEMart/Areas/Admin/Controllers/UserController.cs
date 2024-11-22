@@ -1,5 +1,6 @@
 ﻿using HieuEMart.Models;
 using HieuEMart.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,7 +10,7 @@ using System.Numerics;
 namespace HieuEMart.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("Admin/User")]
+   [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<AppUserModel> _userManager;
@@ -76,32 +77,53 @@ namespace HieuEMart.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
             {
-                existingUser.UserName = user.UserName;
-                existingUser.Email = user.Email;
-                existingUser.PhoneNumber = user.PhoneNumber;
-                existingUser.RoleId = user.RoleId;
+                var roles = await _roleManager.Roles.ToListAsync();
+                ViewBag.Roles = new SelectList(roles, "Id", "Name");
+                return View(user);
             }
+
+            // Cập nhật thông tin người dùng
+            existingUser.UserName = user.UserName;
+            existingUser.Email = user.Email;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.RoleId = user.RoleId; // Lưu RoleId vào cột RoleId
+
             var updateUserResult = await _userManager.UpdateAsync(existingUser);
-            if (updateUserResult.Succeeded)
+            if (!updateUserResult.Succeeded)
             {
-                return RedirectToAction("Index", "User");
+                AddIdentityErrors(updateUserResult);
+                var roles = await _roleManager.Roles.ToListAsync();
+                ViewBag.Roles = new SelectList(roles, "Id", "Name");
+                return View(user);
+            }
+
+            // Cập nhật vai trò của người dùng trong bảng liên kết
+            var currentRoles = await _userManager.GetRolesAsync(existingUser);
+            if (currentRoles.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(existingUser, currentRoles); // Xóa các vai trò hiện tại
+            }
+
+            var newRole = await _roleManager.FindByIdAsync(user.RoleId);
+            if (newRole != null)
+            {
+                await _userManager.AddToRoleAsync(existingUser, newRole.Name); // Gán vai trò mới
             }
             else
             {
-                AddIdentityErrors(updateUserResult);
-                return View(existingUser);
+                ModelState.AddModelError("", "Vai trò không hợp lệ.");
+                var roles = await _roleManager.Roles.ToListAsync();
+                ViewBag.Roles = new SelectList(roles, "Id", "Name");
+                return View(user);
             }
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
 
-            TempData["error"] = "Không cập nhật thành công";
-            var errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)).ToList();
-            string errorMessage = string.Join("\n", errors);
-
-            return View(user);
+            TempData["success"] = "Cập nhật người dùng thành công.";
+            return RedirectToAction("Index", "User");
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

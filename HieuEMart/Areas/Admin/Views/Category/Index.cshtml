@@ -1,7 +1,18 @@
 ﻿@model IEnumerable<CategoryModel>
 @{
     ViewData["title"] = "Danh sách danh mục";
+
+    Paginate pager = new Paginate();
+
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
+
 @section naviheader {
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -91,4 +102,5 @@
             </table>
         </div>
     </div>
+    <partial name="_paging" model="@pager" />
 </section>

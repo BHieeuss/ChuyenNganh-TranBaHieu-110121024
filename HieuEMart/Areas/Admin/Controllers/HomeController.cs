@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace HieuEMart.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	[Authorize]
-	public class HomeController : Controller
+    [Authorize(Roles = "Admin, Staff")]
+    public class HomeController : Controller
 	{
 		public IActionResult Index()
 		{

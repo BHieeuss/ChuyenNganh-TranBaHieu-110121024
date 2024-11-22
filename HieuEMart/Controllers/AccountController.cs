@@ -9,10 +9,12 @@ namespace HieuEMart.Controllers
 	{
 		private UserManager<AppUserModel> _userManager;
 		private SignInManager<AppUserModel> _signInManager;
-		public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager) 
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager, RoleManager<IdentityRole> roleManager) 
 		{
 			_userManager = userManager;
-			_signInManager = signInManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
 		}
 		public IActionResult Login(string returnUrl)
 		{
@@ -46,9 +48,13 @@ namespace HieuEMart.Controllers
 				IdentityResult result = await _userManager.CreateAsync(newUser, user.Password);
 				if (result.Succeeded)
 				{
-					TempData["success"] = "Tạo tài khoản thành công";
-					return Redirect("/account/login");
+					string roleId = "C3BB5327-2A05-4FB6-BABC-E406556939AA";
+                    var role = await _roleManager.FindByIdAsync(roleId);
+                    TempData["success"] = "Tạo tài khoản thành công";
+                    await _userManager.AddToRoleAsync(newUser, role.Name);
+                    return Redirect("/account/login");
 				}
+
 				foreach(IdentityError error in result.Errors) 
 				{
 					ModelState.AddModelError("", error.Description);

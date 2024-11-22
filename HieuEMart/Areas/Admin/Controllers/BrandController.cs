@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HieuEMart.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize]
+	[Authorize(Roles = "Admin")]
 	public class BrandController : Controller
     {
         private readonly DataContext _dataContext;
