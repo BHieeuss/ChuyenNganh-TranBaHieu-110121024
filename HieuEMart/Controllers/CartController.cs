@@ -100,7 +100,7 @@ namespace HieuEMart.Controllers
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");
 			{
 				HttpContext.Session.Remove("Cart");
-				TempData["error"] = "Xóa thành công toàn bộ sản phẩm!";
+				TempData["success"] = "Xóa thành công toàn bộ sản phẩm!";
 				return RedirectToAction("Index");
                 
             }

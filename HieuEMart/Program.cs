@@ -1,4 +1,5 @@
-﻿using HieuEMart.Data;
+﻿using HieuEMart.Areas.Admin.Repository;
+using HieuEMart.Data;
 using HieuEMart.Models;
 using HieuEMart.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddControllersWithViews();
 
