@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<OrderModel>
 @{
     ViewData["title"] = "Danh sách đặt hàng";
+    decimal total = 0;
+    decimal subtotal = 0;
 }
 @section naviheader {
     <!-- Left navbar links -->
@@ -52,6 +54,7 @@
                     {
                         foreach (var item in Model)
                         {
+
                             <tr>
                                 <td>@item.OrderCode</td>
                                 <td>@item.UserName</td>

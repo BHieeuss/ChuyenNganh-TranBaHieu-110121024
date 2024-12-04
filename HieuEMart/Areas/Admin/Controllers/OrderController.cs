@@ -23,5 +23,26 @@ namespace HieuEMart.Areas.Admin.Controllers
             return View(detailsOrder);
         }
 
+        // Cập nhật trạng thái đơn hàng
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(string ordercode, int status)
+        {
+            var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.OrderCode == ordercode);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật trạng thái đơn hàng
+            order.Status = status;
+            _dataContext.Orders.Update(order);
+            await _dataContext.SaveChangesAsync();
+
+            // Trả về kết quả success cùng URL trang Index
+            return Json(new { success = true, redirectUrl = Url.Action("Index") });
+        }
+
+
+
     }
 }

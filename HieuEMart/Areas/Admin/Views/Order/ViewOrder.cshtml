@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<OrderDetails>
 @{
     ViewData["title"] = "Chi tiết đơn hàng";
+    decimal total = 0;
+    decimal subtotal = 0;
 }
 @section naviheader {
     <!-- Left navbar links -->
@@ -51,24 +53,63 @@
                     {
                         foreach (var item in Model)
                         {
+                            subtotal = item.Quantity * item.Price;
+                            total += subtotal;
                             <tr>
+                                <input type="hidden" asp-for="@item.OrderCode" class="getId" />
                                 <td>@item.Product.Name</td>
                                 <td>@item.UserName</td>
                                 <td>@item.Price</td>
                                 <td>@item.Quantity</td>
+                                <td>@subtotal.ToString("C")</td>
                             </tr>
                         }
                     }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4">
-                                Không có bản ghi nào!
-                            </td>
-                        </tr>
-                    }
+                    <tr>
+                        <th colspan="5">Tổng: </th>
+                        <td>@total.ToString("C")</td>
+                        <td>
+                            <select class="fỏm-control select-update-order">
+                                <option value="1">Đơn hàng mới</option>
+                                <option value="0">Đã xử lý</option>
+                            </select>
+                        </td>
+                    </tr>                  
                 </tbody>
             </table>
         </div>
     </div>
 </section>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.select-update-order').change(function () {
+                var status = $(this).val();
+                var ordercode = $('.getId').val();
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateOrder")", // Đảm bảo URL chính xác
+                    data: { status: status, ordercode: ordercode },
+                    success: function (result) {
+                        if (result.success) {
+                            // Hiển thị thông báo thành công
+                            Swal.fire("Cập nhật đơn hàng thành công.")
+                                .then(() => {
+                                    // Sau khi đóng thông báo, chuyển hướng về trang Index
+                                    window.location.href = result.redirectUrl;
+                                });
+                        } else {
+                            Swal.fire("Cập nhật đơn hàng thất bại! " + result.message);
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log("Lỗi cập nhật đơn hàng", error);
+                    }
+                });
+            });
+        });
+    </script>
+}
