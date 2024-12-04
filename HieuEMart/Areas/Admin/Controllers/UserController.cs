@@ -25,7 +25,6 @@ namespace HieuEMart.Areas.Admin.Controllers
 
         }
         [HttpGet]
-        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             //Liên kết data 3 bảng
@@ -40,7 +39,6 @@ namespace HieuEMart.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
         public async Task<IActionResult> Create()
         {
             var roles = await _roleManager.Roles.ToListAsync();
@@ -49,7 +47,6 @@ namespace HieuEMart.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Edit")]
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))

@@ -15,7 +15,6 @@ namespace HieuEMart.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
-        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(p => p.Id).ToListAsync());
@@ -59,46 +58,53 @@ namespace HieuEMart.Areas.Admin.Controllers
             }
             return View(brand);
         }
-        public async Task<IActionResult> Edit(long Id)
-        {
-            BrandModel category = await _dataContext.Brands.FindAsync((long)Id);
-            return View(category);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(BrandModel brand)
-        {
-            if (ModelState.IsValid)
-            {
-                brand.Slug = brand.Name.Replace(" ", "-");
-                var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug && p.Id != brand.Id);
-                if (slug != null)
-                {
-                    ModelState.AddModelError("", "Danh mục đã có trong cơ sở dữ liệu");
-                    return View(brand);
-                }
-                _dataContext.Update(brand);
-                await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Cập nhật thành công";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                TempData["error"] = "Vui lòng kiểm tra lại dữ liệu!";
-                List<string> errors = new List<string>();
-                foreach (var value in ModelState.Values)
-                {
-                    foreach (var error in value.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                }
-                string errorMessage = string.Join("\n", errors);
-                return BadRequest(errorMessage);
-            }
-            return View(brand);
-        }
-        public async Task<IActionResult> Delete(int Id)
+		[HttpGet]
+		[Route("Admin/Brand/Edit/{id}")]
+		public async Task<IActionResult> Edit(int id)
+		{
+			BrandModel brand = await _dataContext.Brands.FindAsync(id);
+			if (brand == null)
+			{
+				return NotFound();
+			}
+			return View(brand);
+		}
+		[HttpPost]
+		[Route("Admin/Brand/Edit/{id}")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(BrandModel brand)
+		{
+			if (ModelState.IsValid)
+			{
+				brand.Slug = brand.Name.Replace(" ", "-");
+				var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug && p.Id != brand.Id);
+				if (slug != null)
+				{
+					ModelState.AddModelError("", "Danh mục đã có trong cơ sở dữ liệu");
+					return View(brand);
+				}
+				_dataContext.Update(brand);
+				await _dataContext.SaveChangesAsync();
+				TempData["success"] = "Cập nhật thành công";
+				return RedirectToAction("Index");
+			}
+			else
+			{
+				TempData["error"] = "Vui lòng kiểm tra lại dữ liệu!";
+				List<string> errors = new List<string>();
+				foreach (var value in ModelState.Values)
+				{
+					foreach (var error in value.Errors)
+					{
+						errors.Add(error.ErrorMessage);
+					}
+				}
+				string errorMessage = string.Join("\n", errors);
+				return BadRequest(errorMessage);
+			}
+			return View(brand);
+		}
+		public async Task<IActionResult> Delete(int Id)
         {
             BrandModel brand = await _dataContext.Brands.FindAsync(Id);
             if (brand == null)
