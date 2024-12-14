@@ -2544,4 +2544,23 @@ h2.title {
 .contact-info .social-networks ul li a:hover{
   color: #FE980F;
 }
+.review-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
 
+.review-item {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 15px;
+	background-color: #f9f9f9;
+}
+
+.rating-stars i {
+    color: #FFC107
+    font-size: 18px;
+}

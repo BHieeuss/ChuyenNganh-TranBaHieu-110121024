@@ -27,7 +27,10 @@ namespace HieuEMart.Models
 		public BrandModel Brand { get; set; }
 
 
-        [NotMapped]
+		public List<RatingModel> Ratings { get; set; }
+
+
+		[NotMapped]
         [FileExtension]
         public IFormFile? ImageUpload { get; set; }
     }

@@ -30,7 +30,7 @@ namespace HieuEMart.Controllers
 				{
 					return Redirect(loginVM.ReturnUrl ?? "/");
 				}
-				ModelState.AddModelError("", "Không xác thực được Tên đăng nhập hoặc Mật khẩu");
+				TempData["error"] = "Không xác thực được Tên đăng nhập hoặc Mật khẩu";
 			}
 			return View(loginVM);
 		}

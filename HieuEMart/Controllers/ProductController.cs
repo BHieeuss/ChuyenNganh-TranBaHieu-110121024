@@ -1,4 +1,6 @@
-﻿using HieuEMart.Repository;
+﻿using HieuEMart.Models;
+using HieuEMart.Models.ViewModels;
+using HieuEMart.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace HieuEMart.Controllers
@@ -19,17 +21,28 @@ namespace HieuEMart.Controllers
 		{
 			if (Id == null) return RedirectToAction("Index");
 
-			var ProductById = _dataContext.Products.Where(p => p.Id == Id).FirstOrDefault();
+			var ProductById = await _dataContext.Products.Include(p => p.Ratings)
+														.Where(p => p.Id == Id).FirstOrDefaultAsync();
 
-			//Sản phẩm liên quan
+			if (ProductById == null) return NotFound();
+
+			// Sản phẩm liên quan
 			var relatedProducts = await _dataContext.Products
 				.Where(p => p.CategoryId == ProductById.CategoryId && p.Id != ProductById.Id)
 				.Take(4)
 				.ToListAsync();
+
 			ViewBag.RelatedProducts = relatedProducts;
 
-			return View(ProductById);
+			var viewModel = new ProductDetailsViewModel
+			{
+				ProductDetails = ProductById,
+				Ratings = ProductById.Ratings.ToList()
+			};
+
+			return View(viewModel);
 		}
+
 
 		public async Task<IActionResult> Search(string searchTerm)
 		{
@@ -39,6 +52,46 @@ namespace HieuEMart.Controllers
 			ViewBag.Keyword = searchTerm;
 
 			return View(products);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CommentProduct(RatingModel rating)
+		{
+
+			if (ModelState.IsValid)
+			{
+				var ratingEntity = new RatingModel
+				{
+					ProductId = rating.ProductId,
+					Name = rating.Name,
+					Email = rating.Email,
+					Comment = rating.Comment,
+					Star = rating.Star
+				};
+
+				// Thêm đánh giá vào cơ sở dữ liệu
+				_dataContext.Ratings.Add(ratingEntity);
+				await _dataContext.SaveChangesAsync();
+
+				// Thông báo thành công
+				TempData["success"] = "Đánh giá thành công!";
+				return Redirect(Request.Headers["Referer"]);
+			}
+			else
+			{
+				TempData["error"] = "Vui lòng kiểm tra lại dữ liệu!";
+				List<string> errors = new List<string>();
+				foreach (var value in ModelState.Values)
+				{
+					foreach (var error in value.Errors)
+					{
+						errors.Add(error.ErrorMessage);
+					}
+				}
+				string errorMessage = string.Join("\n", errors);
+				return RedirectToAction("Detail", new { id = rating.ProductId });
+			}
 		}
 
 	}

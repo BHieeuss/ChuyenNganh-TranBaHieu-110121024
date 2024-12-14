@@ -13,6 +13,12 @@
 	<link href="~/css/animate.css" rel="stylesheet">
 	<link href="~/css/main.css" rel="stylesheet">
 	<link href="~/css/responsive.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+
+
+
 	<link href="
 	https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css
 	" rel="stylesheet">
@@ -26,6 +32,10 @@
 		.custom-swal-popup {
 			width: 600px; /* Tăng chiều rộng */
 			font-size: 1.5em; /* Phóng to nội dung */
+		}
+		.service
+		{
+			margin-top: 10px;
 		}
 	</style>
 
@@ -46,12 +56,12 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="social-icons pull-right">
-						<ul class="nav navbar-nav">
-							<li><a href="https://www.facebook.com/bhieuu.203/"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="https://www.facebook.com/bhieuu.203/"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="https://www.facebook.com/bhieuu.203/"><i class="fa fa-linkedin"></i></a></li>
-							<li><a href="https://www.facebook.com/bhieuu.203/"><i class="fa fa-dribbble"></i></a></li>
-							<li><a href="https://www.facebook.com/bhieuu.203/"><i class="fa fa-google-plus"></i></a></li>
+						<ul class="nav navbar-nav service">
+							<li><a href="#"><i class="bi bi-facebook"></i></a></li>
+							<li><a href="#"><i class="bi bi-twitter"></i></a></li>
+							<li><a href="#"><i class="bi bi-linkedin"></i></a></li>
+							<li><a href="#"><i class="bi bi-dribbble"></i></a></li>
+							<li><a href="#"><i class="bi bi-google"></i></a></li>
 						</ul>
 					</div>
 				</div>
@@ -131,21 +141,13 @@
 						<ul class="nav navbar-nav collapse navbar-collapse">
 							<li><a href="/Home" class="active">Trang chủ</a></li>
 							<li class="dropdown">
-								<a href="/Product">Cửa hàng<i class="fa fa-angle-down"></i></a>
+								<a href="/home">Cửa hàng<i class="fa fa-angle-down"></i></a>
 								<ul role="menu" class="sub-menu">
-									<li><a href="/Cart/Checkout">Thanh toán</a></li>
+									<li><a href="/Cart">Thanh toán</a></li>
 									<li><a>Đăng nhập/Đăng ký</a></li>
 								</ul>
 							</li>
-							<li><a href="/Cart">Giỏ hàng</a></li>
-							<li class="dropdown">
-								<a href="#">Blog<i class="fa fa-angle-down"></i></a>
-								<ul role="menu" class="sub-menu">
-									<li><a href="blog.html">Blog List</a></li>
-									<li><a href="blog-single.html">Blog Single</a></li>
-								</ul>
-							</li>
-							<li><a href="contact-us.html">Contact</a></li>
+							<li><a href="contact-us.html">Liên hệ</a></li>
 						</ul>
 					</div>
 				</div>
@@ -160,8 +162,10 @@
 				</div>
 			</div>
 		</div>
-	</div><!--/header-bottom-->
-</header><!--/header-->
+	</div>
+</header>
+
+
 <body>
 	<section>
 		<div class="container">
@@ -340,6 +344,8 @@
 	<script src="~/js/price-range.js"></script>
 	<script src="~/js/jquery.prettyPhoto.js"></script>
 	<script src="~/js/main.js"></script>
+
+
 
 	<script>
 		$(function () {
