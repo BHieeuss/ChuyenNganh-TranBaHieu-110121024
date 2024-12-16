@@ -77,29 +77,8 @@
 					<div class="logo pull-left">
 						<a href="index.html"><img src="images/home/logo.png" alt="" /></a>
 					</div>
-					<div class="btn-group pull-right">
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-								USA
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#">Canada</a></li>
-								<li><a href="#">UK</a></li>
-							</ul>
-						</div>
 
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-								DOLLAR
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#">Canadian Dollar</a></li>
-								<li><a href="#">Pound</a></li>
-							</ul>
-						</div>
-					</div>
+
 				</div>
 				<div class="col-sm-8">
 					<div class="shop-menu pull-right">
@@ -143,8 +122,7 @@
 							<li class="dropdown">
 								<a href="/home">Cửa hàng<i class="fa fa-angle-down"></i></a>
 								<ul role="menu" class="sub-menu">
-									<li><a href="/Cart">Thanh toán</a></li>
-									<li><a>Đăng nhập/Đăng ký</a></li>
+									<li><a href="/Cart">Thanh toán</a></li>									
 								</ul>
 							</li>
 							<li><a href="contact-us.html">Liên hệ</a></li>
@@ -154,7 +132,7 @@
 				<div class="col-sm-3">
 					<form asp-controller="Product" asp-action="Search" method="post">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" name="searchTerm" />
+						<input type="text" placeholder="Tìm kiếm..." name="searchTerm" />
 						<button class="btn btn-warning" type="submit">Tìm kiếm</button>
 
 					</div>
@@ -197,8 +175,8 @@
 										<i class="fa fa-play-circle-o"></i>
 									</div>
 								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
+								<p>Lorem ipsum</p>
+								<h2>24 DEC 2024</h2>
 							</div>
 						</div>
 
@@ -212,8 +190,8 @@
 										<i class="fa fa-play-circle-o"></i>
 									</div>
 								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
+								<p>Lorem ipsum</p>
+								<h2>24 DEC 2024</h2>
 							</div>
 						</div>
 
@@ -227,8 +205,8 @@
 										<i class="fa fa-play-circle-o"></i>
 									</div>
 								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
+								<p>Lorem ipsum</p>
+								<h2>24 DEC 2024</h2>
 							</div>
 						</div>
 
@@ -242,8 +220,8 @@
 										<i class="fa fa-play-circle-o"></i>
 									</div>
 								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
+								<p>Lorem ipsum</p>
+								<h2>24 DEC 2024</h2>
 							</div>
 						</div>
 					</div>
@@ -274,13 +252,11 @@
 					</div>
 					<div class="col-sm-2">
 						<div class="single-widget">
-							<h2>Quock Shop</h2>
+							<h2>Quick Shop</h2>
 							<ul class="nav nav-pills nav-stacked">
-								<li><a href="#">T-Shirt</a></li>
-								<li><a href="#">Mens</a></li>
-								<li><a href="#">Womens</a></li>
-								<li><a href="#">Gift Cards</a></li>
-								<li><a href="#">Shoes</a></li>
+								<li><a href="#">Gaming Computer</a></li>
+								<li><a href="#">Literary Computer</a></li>
+								<li><a href="#">Cheap Computer</a></li>
 							</ul>
 						</div>
 					</div>
@@ -311,11 +287,15 @@
 					<div class="col-sm-3 col-sm-offset-1">
 						<div class="single-widget">
 							<h2>Liên hệ Shop</h2>
+
 							<form action="#" class="searchform">
-								<input type="text" placeholder="Gmail của bạn" />
-								<button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
+								<div class="form-group">
+									<input type="text" placeholder="Gmail của bạn" class="form-control email-input" />
+									<button type="submit" class="btn btn-default submit-btn"><i class="fa fa-arrow-circle-o-right"></i></button>
+								</div>
 								<p>Nhận thông tin cập nhật mới nhất từ <br />trang web của chúng tôi và gửi đến bạn...</p>
 							</form>
+
 						</div>
 					</div>
 
@@ -332,12 +312,10 @@
 			</div>
 		</div>
 
-	</footer><!--/Footer-->
+	</footer>
 
 
-	<script src="
-	https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js
-	"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
 	<script src="~/js/jquery.js"></script>
 	<script src="~/js/bootstrap.min.js"></script>
 	<script src="~/js/jquery.scrollUp.min.js"></script>
@@ -348,6 +326,7 @@
 
 
 	<script>
+
 		$(function () {
 			var successMessage = '@Html.Raw(TempData["success"])';
 			var errorMessage = '@Html.Raw(TempData["error"])';
@@ -378,8 +357,8 @@
 				});
 			}
 		});
-
 	</script>
+
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
