@@ -29,21 +29,40 @@ namespace HieuEMart.Controllers
 		}
 		public async Task<IActionResult> Add(int Id)
 		{
+			// Kiểm tra xem người dùng đã đăng nhập chưa
+			if (!User.Identity.IsAuthenticated)
+			{
+				// Trả về thông báo yêu cầu đăng nhập
+				return Json(new { loggedIn = false });
+			}
+
+			// Lấy sản phẩm từ cơ sở dữ liệu
 			ProductModel product = await _dataContext.Products.FindAsync((long)Id);
+
+			// Lấy giỏ hàng từ session, nếu không có thì tạo mới
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
-			CartItemModel cartItems = cart.Where(c => c.ProductId == Id).FirstOrDefault();
+
+			// Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+			CartItemModel cartItems = cart.FirstOrDefault(c => c.ProductId == Id);
+
 			if (cartItems == null)
 			{
+				// Nếu chưa có, thêm sản phẩm vào giỏ hàng
 				cart.Add(new CartItemModel(product));
 			}
 			else
 			{
+				// Nếu đã có, tăng số lượng sản phẩm
 				cartItems.Quantity += 1;
 			}
-            TempData["success"] = "Thêm sản phẩm vào giỏ hàng thành công!";
-            HttpContext.Session.SetJson("Cart", cart);
-			return Redirect(Request.Headers["Referer"].ToString());
+
+			// Lưu giỏ hàng vào session
+			HttpContext.Session.SetJson("Cart", cart);
+
+			// Trả về thông báo thành công và giỏ hàng
+			return Json(new { loggedIn = true, message = "Thêm sản phẩm vào giỏ hàng thành công!" });
 		}
+
 		public async Task<IActionResult> Decrease(int Id)
 		{
 			List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");

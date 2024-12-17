@@ -1,10 +1,9 @@
-﻿@model IEnumerable<CategoryModel>
+﻿@model IEnumerable<HieuEMart.Models.CategoryModel>
 
-@foreach ( var item in Model)
+@foreach (var category in Model)
 {
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h4 class="panel-title"><a asp-action="Index" asp-controller="Category" asp-route-Slug="@item.Slug">@item.Name</a></h4>
-		</div>
-	</div>
+    <li>
+        <a href="@Url.Action("Index", "Category", new { Slug = category.Slug }) ">@category.Name</a>
+       
+    </li>
 }

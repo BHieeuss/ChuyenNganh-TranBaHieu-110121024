@@ -2,47 +2,39 @@
 @{
 	ViewData["Title"] = @ViewBag.Keyword;
 }
-<style>
-	.product-image-wrapper {
-		height: 445px;
-	}
-</style>
-@Html.Partial("_Slide")
-<div class="col-sm-3">
-	@Html.Partial("_SidebarPartial")
-</div>
-<div class="col-sm-9 padding-right">
-	<div class="features_items">
-		<!--features_items-->
-		<h2 class="title text-center">@ViewBag.Keyword</h2>
-		@foreach (var item in Model)
-		{
-			<div class="col-sm-4">
-				<div class="product-image-wrapper">
-					<a>
-						<div class="single-products">
-							<div class="productinfo text-center">
-								<img src="~/media/products/@item.Image" alt="@item.Name" width="100%" />
-								<h2>@item.Price.ToString("#, ##0 VNĐ")</h2>
-								<p>@item.Name</p>
-								<p>Danh mục: @item.Category.Name</p>
-								<p>Thương hiệu: @item.Brand.Name</p>
-								<a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart" asp-route-Id="@item.Id" onclick=""><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
-							</div>
-						</div>
-					</a>
-					<div class="choose">
-						<ul class="nav nav-pills nav-justified">
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		}
+        <!-- product section -->
+        <div id="product-section" class="mt-150 mb-150">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2 text-center">
+                        <div class="section-title">
+                            <h3><span class="orange-text">Sản phẩm</span>: @ViewBag.Keyword</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, fuga quas itaque eveniet beatae optio.</p>
+                        </div>
+                    </div>
+                </div>
 
-
-
-
-	</div><
-</div>
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 text-center">
+                            <div class="single-product-item">
+                                <div class="product-image">
+                                    <a asp-action="Details" asp-controller="Product" asp-route-Id="@item.Id">
+                                        <img class="product-img" src="~/media/products/@item.Image" alt="@item.Name">
+                                    </a>
+                                </div>
+                                <h3 class="product-name">@item.Name</h3>
+                                <p class="product-price">
+                                    <span style="font-weight: bold">Giá sản phẩm: </span> <span class="price-value" style="color: #d70018;">@item.Price.ToString("#, ##0 VNĐ")</span>
+                                </p>
+                                <a href="cart.html" class="cart-btn">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- end product section -->

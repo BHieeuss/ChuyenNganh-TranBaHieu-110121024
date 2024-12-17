@@ -5,23 +5,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HieuEMart.Controllers
 {
-    public class CategoryController : Controller
-    {
+	public class CategoryController : Controller
+	{
 		private readonly DataContext _dataContext;
-        public CategoryController(DataContext context)
-        {
-			_dataContext = context; 
 
+		public CategoryController(DataContext context)
+		{
+			_dataContext = context;
 		}
-		public async Task <IActionResult> Index(string Slug = "")
-        {
-            CategoryModel category = _dataContext.Categories.Where( c => c.Slug == Slug ).FirstOrDefault();
 
-            if (category == null) return RedirectToAction("Index");
+		// Action này sẽ trả về danh sách các danh mục
+		public async Task<IActionResult> GetCategories()
+		{
+			var categories = await _dataContext.Categories.ToListAsync();
+			return PartialView("_CategoriesList", categories); // Trả về PartialView chứa danh sách các danh mục
+		}
 
-            var ProductByCategory = _dataContext.Products.Where(p => p.CategoryId == category.Id);
+		public async Task<IActionResult> Index(string Slug = "")
+		{
+			CategoryModel category = _dataContext.Categories
+				.Where(c => c.Slug == Slug)
+				.FirstOrDefault();
 
-            return View(await ProductByCategory.OrderByDescending(p => p.Id).ToListAsync());
-        }
-    }
+			if (category == null) return RedirectToAction("Index");
+
+			var ProductByCategory = _dataContext.Products
+				.Where(p => p.CategoryId == category.Id);
+
+			return View(await ProductByCategory.OrderByDescending(p => p.Id).ToListAsync());
+		}
+	}
 }

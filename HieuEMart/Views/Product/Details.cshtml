@@ -1,175 +1,168 @@
 ﻿@model ProductDetailsViewModel
 
-<div class="row">
-	<div class="col-sm-3">
-		@Html.Partial("_SidebarPartial")
-	</div>
-
-	<div class="col-sm-9 padding-right">
-		<div class="product-details">
-			<!--product-details-->
-			<div class="col-sm-5">
-				<div class="view-product" >
-					<img src="~/media/products/@Model.ProductDetails.Image" alt=""  width="100%"/>		
+<!-- single product -->
+<div class="single-product mt-50 mb-50">
+	<hr />
+	<div class="container">
+		<div class="row">
+			<div class="col-md-5">
+				<div class="single-product-img">
+					<img src="~/media/products/@Model.ProductDetails.Image" alt="">
 				</div>
-				<div id="similar-product" class="carousel slide" data-ride="carousel">
-
-					<!-- Wrapper for slides -->
-					<div class="carousel-inner">
-						<div class="item">
-							<a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-							<a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-							<a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-						</div>
-						
-
-					</div>
-
-					<!-- Controls -->
-					<a class="left item-control" href="#similar-product" data-slide="prev">
-						<i class="fa fa-angle-left"></i>
-					</a>
-					<a class="right item-control" href="#similar-product" data-slide="next">
-						<i class="fa fa-angle-right"></i>
-					</a>
-				</div>
-
 			</div>
-			<div class="col-sm-7">
-				<div class="product-information">
-					<!--/product-information-->
-
-					<h2>@Model.ProductDetails.Name</h2>
-					<span>
-						<span>@Model.ProductDetails.Price.ToString("#, ##0 VNĐ")</span>
-						<button class="btn btn-default add-to-cart" data-product_id="@Model.ProductDetails.Id"> <i class="fa fa-shopping-cart"></i>Thêm giỏ hàng</button>
-					</span>
+			<div class="col-md-7">
+				<div class="single-product-content">
+					<h3>@Model.ProductDetails.Name</h3>
+					<p class="single-product-pricing" style="color: #d70018;"><span style="color: #1E90FF; font-weight:bold;">Giá sản phẩm: </span> @Model.ProductDetails.Price.ToString("#, ##0 VNĐ")</p>
 					<p><b>Hãng:</b> @Model.ProductDetails.Brand.Name</p>
-					<p><b>Danh mục:</b> @Model.ProductDetails.Category.Name</p>
-					<a href=""><img src="images/product-details/share.png" class="share img-responsive" alt="" /></a>
-				</div><!--/product-information-->
-			</div>
-		</div><!--/product-details-->
-
-		<div class="category-tab shop-details-tab">
-			<!--category-tab-->
-			<div class="col-sm-12">
-				<ul class="nav nav-tabs">
-					<li class="active"><a data-toggle="tab">Sản phẩm</a></li>
-					<li><a href="#details" data-toggle="tab">Chi tiết sản phẩm</a></li>
-					<li><a href="#reviews" data-toggle="tab">Đánh giá</a></li>
-				</ul>
-			</div>
-			<div class="tab-content">
-				<div class="tab-pane fade" id="details">
-							@Html.Raw(Model.ProductDetails.Description)
-				</div>
-
-				<div class="tab-pane fade" id="reviews">
-					<div class="col-sm-12">
-						<ul class="review-list list-group d-flex flex-column gap-3">
-							@foreach (var rating in Model.Ratings)
-							{
-								<li class="review-item list-group-item">
-									<div class="d-flex align-items-center mb-2">
-										<div class="me-3">
-											<i class="bi bi-person-circle fs-3 text-primary"></i>
-										</div>
-										<div>
-											<strong>@rating.Name</strong>
-										</div>
-									</div>
-
-									<div class="mb-2">
-										<span class="rating-stars text-warning">
-											@for (int i = 0; i < Convert.ToInt32(rating.Star); i++)
-											{
-												<i class="bi bi-star-fill"></i>
-											}
-										</span>
-									</div>
-
-									<!-- Nội dung bình luận -->
-									<p class="review-comment mb-0">@rating.Comment</p>
-								</li>
-							}
-						</ul>
-
-
-
-
-						<h3>Để lại đánh giá của bạn:</h3>
-						<form autocomplete="off" asp-action="CommentProduct" asp-controller="Product" method="POST">
-							<input type="hidden" name="ProductId" value="@Model.ProductDetails.Id" />
-							<input type="hidden" name="Star" value="4" />
-
-							<!-- Tên người dùng -->
-							<div class="form-group">
-								<label for="Name" class="font-weight-bold">Tên của bạn: </label>
-								<input name="Name" type="text" id="Name" placeholder="Nhập tên của bạn" class="form-control" required />
-								<span asp-validation-for="Name" class="text-danger"></span>
-							</div>
-
-							<!-- Email -->
-							<div class="form-group">
-								<label for="Email" class="font-weight-bold">Địa chỉ email</label>
-								<input name="Email" type="email" id="Email" placeholder="Nhập địa chỉ Email của bạn" class="form-control" required />
-								<span asp-validation-for="Email" class="text-danger"></span>
-							</div>
-
-							<!-- Bình luận -->
-							<div class="form-group">
-								<label for="Comment" class="font-weight-bold">Đánh giá: </label>
-								<textarea name="Comment" id="Comment" placeholder="Nhập đánh giá của bạn tại đây" class="form-control" rows="4" required></textarea>
-								<span asp-validation-for="Comment" class="text-danger"></span>
-							</div>
-
-							<!-- Nút Submit -->
-							<div class="form-group">
-								<button type="submit" class="btn btn-primary btn-lg pull-right">Submit</button>
-							</div>
-						</form>
-
-
+					<p><b>Danh mục:</b> @Model.ProductDetails.Category.Name </p>
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta sint dignissimos, rem commodi cum voluptatem quae reprehenderit repudiandae ea tempora incidunt ipsa, quisquam animi perferendis eos eum modi! Tempora, earum.</p>
+					<div class="single-product-form">
+						<a class="cart-btn add-to-cart" data-product_id="@Model.ProductDetails.Id"><i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng</a>
+						<p><strong>Tag: </strong>#@Model.ProductDetails.Category.Name, #@Model.ProductDetails.Brand.Name</p>
 					</div>
+					<h4>Chia sẻ:</h4>
+					<ul class="product-share">
+						<li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+						<li><a href=""><i class="fab fa-twitter"></i></a></li>
+						<li><a href=""><i class="fab fa-google-plus-g"></i></a></li>
+						<li><a href=""><i class="fab fa-linkedin"></i></a></li>
+					</ul>
 				</div>
-
 			</div>
 		</div>
+	</div>
 
-
-		@* Sản phẩm liên quan *@
-		<div class="recommended_items">
-			<h2 class="title text-center">Sản phẩm liên quan</h2>
-			<d<div class="carousel-inner">
-			<div class="item active">
-						@foreach (var relatedProduct in ViewBag.RelatedProducts as IEnumerable<ProductModel>)
-						{
-							<div class="col-sm-4">
-								<div class="product-image-wrapper">
-									<a>
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<a asp-action="Details" asp-controller="Product" asp-route-Id="@relatedProduct.Id">
-												<img src="~/media/products/@relatedProduct.Image" alt="@relatedProduct.Name" width="100%" />
-												<h2>@relatedProduct.Price.ToString("#,##0 VNĐ")</h2>
-												<p>@relatedProduct.Name</p>
-												<p>Danh mục: @relatedProduct.Category.Name</p>
-												<p>Thương hiệu: @relatedProduct.Brand.Name</p>
-												<button class="btn btn-default add-to-cart" data-product_id="@relatedProduct.Id"> <i class="fa fa-shopping-cart"></i>Thêm giỏ hàng</button>
-												</a>
+	<div class="row justify-content-center">
+		<div class="col-sm-9 col-md-8 col-lg-7 padding-right">
+			<div class="category-tab shop-details-tab">
+				<!-- Category Tab -->
+				<div class="col-sm-12">
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#details"><Strong>Chi tiết sản phẩm</Strong></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#reviews"><strong>Đánh giá</strong></a>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-content mt-4">
+					<!-- Product Tab Content -->
+					<div class="tab-pane fade show active" id="products">
+						@Html.Raw(Model.ProductDetails.Description)
+					</div>
+					<!-- Reviews Tab Content -->
+					<div class="tab-pane fade" id="reviews">
+						<div class="col-sm-12">
+							<ul class="review-list list-group d-flex flex-column gap-3">
+								@foreach (var rating in Model.Ratings)
+								{
+									<li class="review-item list-group-item">
+										<div class="d-flex align-items-center mb-2">
+											<div class="me-3">
+												<i class="bi bi-person-circle fs-3 text-primary"></i>
+											</div>
+											<div>
+												<strong>@rating.Name</strong>
 											</div>
 										</div>
-									</a>
+
+										<div class="mb-2">
+											<span class="rating-stars text-warning">
+												@for (int i = 0; i < Convert.ToInt32(rating.Star); i++)
+												{
+													<i class="bi bi-star-fill"></i>
+												}
+											</span>
+										</div>
+
+										<!-- Comment content -->
+										<p class="review-comment mb-0">@rating.Comment</p>
+									</li>
+								}
+							</ul>
+
+							<h3 class="mt-4">Để lại đánh giá của bạn:</h3>
+							<form autocomplete="off" asp-action="CommentProduct" asp-controller="Product" method="POST">
+								<input type="hidden" name="ProductId" value="@Model.ProductDetails.Id" />
+								<input type="hidden" name="Star" value="4" />
+
+								<!-- User Name -->
+								<div class="form-group mb-3">
+									<label for="Name" class="font-weight-bold">Tên của bạn: </label>
+									<input name="Name" type="text" id="Name" placeholder="Nhập tên của bạn" class="form-control" required />
+									<span asp-validation-for="Name" class="text-danger"></span>
 								</div>
-							</div>
-						}
+
+								<!-- Email -->
+								<div class="form-group mb-3">
+									<label for="Email" class="font-weight-bold">Địa chỉ email</label>
+									<input name="Email" type="email" id="Email" placeholder="Nhập địa chỉ Email của bạn" class="form-control" required />
+									<span asp-validation-for="Email" class="text-danger"></span>
+								</div>
+
+								<!-- Comment -->
+								<div class="form-group mb-3">
+									<label for="Comment" class="font-weight-bold">Đánh giá: </label>
+									<textarea name="Comment" id="Comment" placeholder="Nhập đánh giá của bạn tại đây" class="form-control" rows="4" required></textarea>
+									<span asp-validation-for="Comment" class="text-danger"></span>
+								</div>
+
+								<!-- Submit Button -->
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary btn-lg w-100">Gửi Đánh Giá</button>
+								</div>
+							</form>
+						</div>
 					</div>
+				</div>
 			</div>
 		</div>
+	</div>
+	<hr />
+	@* Sản phẩm liên quan *@
+	<!-- More Products Section -->
+	<div class="more-products mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="section-title">
+						<h3><span class="orange-text">Sản phẩm</span> Liên quan</h3>
+						<p>Tham khảo thêm các sản phẩm liên quan.</p>
+					</div>
+				</div>
+			</div>
 
+			<!-- Related Products Carousel -->
+			<div class="row">
+				<!-- Loop through Related Products -->
+				@foreach (var relatedProduct in ViewBag.RelatedProducts as IEnumerable<ProductModel>)
+				{
+					<div class="col-lg-4 col-md-6 text-center">
+						<div class="single-product-item">
+							<div class="product-image">
+								<a asp-action="Details" asp-controller="Product" asp-route-Id="@relatedProduct.Id">
+									<img class="product-img" src="~/media/products/@relatedProduct.Image" alt="@relatedProduct.Name">
+								</a>
+							</div>
+							<h3 class="product-name">@relatedProduct.Name</h3>
+							<p class="product-price">
+								<span style="font-weight: bold">Giá sản phẩm: </span>
+								<span class="price-value" style="color: #d70018;">@relatedProduct.Price.ToString("#, ##0 VNĐ")</span>
+							</p>
+							<a href="cart.html" class="cart-btn">
+								<i class="fas fa-shopping-cart"></i> Add to Cart
+							</a>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
 	</div>
 </div>
+<!-- end single product -->
+
 @section Scripts
 {
 	<script>
@@ -181,10 +174,36 @@
 				url: "@Url.Action("Add", "Cart")",
 				data: { Id: Id },
 				success: function (result) {
-					if (result) {
-						Swal.fire("Thêm vào giỏ hàng thành công");
+					if (result.loggedIn) {
+						Swal.fire({
+							title: 'Thêm vào giỏ hàng thành công!',
+							text: 'Sản phẩm đã được thêm vào giỏ hàng.',
+							icon: 'success',
+							showCancelButton: true,
+							confirmButtonText: 'Thanh toán',
+							cancelButtonText: 'Tiếp tục mua sắm',
+							reverseButtons: true
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.href = '@Url.Action("Index", "Cart")';
+							} else if (result.dismiss === Swal.DismissReason.cancel) {
+								window.location.href = '@Url.Action("Index", "Home")';
+							}
+						});
 					} else {
-						Swal.fire("Có lỗi xảy ra, vui lòng thử lại.");
+						Swal.fire({
+							title: 'Vui lòng đăng nhập!',
+							text: 'Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.',
+							icon: 'warning',
+							confirmButtonText: 'Đăng nhập',
+							showCancelButton: true,
+							cancelButtonText: 'Hủy',
+							reverseButtons: true
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.href = '@Url.Action("Login", "Account")';
+							}
+						});
 					}
 				},
 				error: function (req, status, error) {
@@ -193,6 +212,7 @@
 				}
 			});
 		});
+
 
 	</script>
 }

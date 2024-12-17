@@ -16,11 +16,13 @@ namespace HieuEMart.Controllers
             _roleManager = roleManager;
             _signInManager = signInManager;
 		}
-		public IActionResult Login(string returnUrl)
-		{
-			return View( new LoginViewModel { ReturnUrl = returnUrl });
-		}
-		[HttpPost]
+        public IActionResult Login(string returnUrl)
+        {
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
+
+
+        [HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel loginVM)
 		{
 			if(ModelState.IsValid)
@@ -34,6 +36,8 @@ namespace HieuEMart.Controllers
 			}
 			return View(loginVM);
 		}
+
+
 		public IActionResult Create()
 		{
 			return View();

@@ -17,12 +17,14 @@ namespace HieuEMart.Controllers
 		{
 			return View();
 		}
-		public async Task<IActionResult> Details(int Id)
+		public async Task<IActionResult> Details(int? Id)
 		{
 			if (Id == null) return RedirectToAction("Index");
 
 			var ProductById = await _dataContext.Products.Include(p => p.Ratings)
-														.Where(p => p.Id == Id).FirstOrDefaultAsync();
+														 .Include(p => p.Brand)
+														 .Include(p => p.Category)
+														 .Where(p => p.Id == Id).FirstOrDefaultAsync();
 
 			if (ProductById == null) return NotFound();
 
