@@ -1,0 +1,46 @@
+﻿@model HieuEMart.Models.BillingAddressModel
+
+<div class="checkout-section mt-5 mb-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3 class="text-center mb-4">
+                    <span class="orange-text">Thông tin</span> thanh toán
+                </h3>
+                <form asp-controller="Checkout" asp-action="SaveBillingAddress" method="post" class="needs-validation" novalidate>
+                    <div class="form-group mb-3">
+                        <label for="FullName" class="form-label">Họ và tên</label>
+                        <input type="text" id="FullName" name="FullName" class="form-control" placeholder="Nhập họ và tên" required>
+                        <div class="invalid-feedback">Vui lòng nhập họ và tên.</div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="PhoneNumber" class="form-label">Số điện thoại</label>
+                        <input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" required>
+                        <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="SpecificAddress" class="form-label">Địa chỉ cụ thể</label>
+                        <input type="text" id="SpecificAddress" name="SpecificAddress" class="form-control" placeholder="Nhập địa chỉ cụ thể" required>
+                        <div class="invalid-feedback">Vui lòng nhập địa chỉ cụ thể.</div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Ward" class="form-label">Ấp/Phường</label>
+                        <input type="text" id="Ward" name="Ward" class="form-control" placeholder="Nhập ấp/phường" required>
+                        <div class="invalid-feedback">Vui lòng nhập ấp/phường.</div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="District" class="form-label">Xã/Quận/Huyện</label>
+                        <input type="text" id="District" name="District" class="form-control" placeholder="Nhập xã/quận/huyện" required>
+                        <div class="invalid-feedback">Vui lòng nhập xã/quận/huyện.</div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Province" class="form-label">Tỉnh/Thành phố</label>
+                        <input type="text" id="Province" name="Province" class="form-control" placeholder="Nhập tỉnh/thành phố" required>
+                        <div class="invalid-feedback">Vui lòng nhập tỉnh/thành phố.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Xác nhận thanh toán</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

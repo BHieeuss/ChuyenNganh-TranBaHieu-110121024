@@ -12,5 +12,6 @@ namespace HieuEMart.Models
         public int Quantity { get; set; }
         [ForeignKey("ProductId")]
         public ProductModel Product { get; set; }
+      //  public BillingAddressModel BillingAddress { get; set; }
     }
 }
