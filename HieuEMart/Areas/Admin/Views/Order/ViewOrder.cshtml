@@ -45,7 +45,7 @@
                     <div class="card-body">
                         <p class="mb-2">
                             <strong>Thông tin khách hàng: </strong>@billingAddress.FullName - @billingAddress.PhoneNumber,
-                            @($"{billingAddress.SpecificAddress}, {billingAddress.Ward}, {billingAddress.District}, {billingAddress.Province}")
+                        @($"{billingAddress.SpecificAddress} - ( {billingAddress.Ward} - {billingAddress.District} - {billingAddress.Province} )")
                         </p>
                     </div>
             }
@@ -85,4 +85,7 @@
             </table>
         </div>
     </div>
+    <a class="btn btn-primary" asp-action="ExportOrderToPdf" asp-route-ordercode="@ViewData["OrderCode"]">
+        Xuất Đơn Hàng PDF
+    </a>
 </section>

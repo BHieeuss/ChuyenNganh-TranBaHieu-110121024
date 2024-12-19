@@ -10,5 +10,6 @@
 		public int Status { get; set; }
 
 		public ICollection<BillingAddressModel> BillingAddresses { get; set; }
+
 	}
 }
