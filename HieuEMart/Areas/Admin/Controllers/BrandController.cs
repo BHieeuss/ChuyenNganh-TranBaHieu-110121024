@@ -15,10 +15,27 @@ namespace HieuEMart.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
-        public async Task<IActionResult> Index()
+
+
+        public async Task<IActionResult> Index(int pg = 1)
         {
-            return View(await _dataContext.Brands.OrderByDescending(p => p.Id).ToListAsync());
+			List<BrandModel> brand = _dataContext.Brands.ToList();
+
+			const int pageSize = 10;
+
+			if (pg < 1)
+			{
+				pg = 1;
+			}
+			int rescCount = brand.Count();
+			var pager = new Paginate(rescCount, pg, pageSize);
+			int recSkip = (pg - 1) * pageSize;
+			var data = brand.Skip(recSkip).Take(pager.PageSize).ToList();
+			ViewBag.Pager = pager;
+			return View(data);
         }
+
+
         [HttpGet]
         public IActionResult Create()
         {

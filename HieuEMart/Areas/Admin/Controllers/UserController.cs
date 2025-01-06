@@ -46,7 +46,7 @@ namespace HieuEMart.Areas.Admin.Controllers
             return View(new AppUserModel());
         }
 
-        [HttpGet]
+       [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -66,7 +66,6 @@ namespace HieuEMart.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Route("Edit")]
         public async Task<IActionResult> Edit(string id, AppUserModel user)
         {
             var existingUser = await _userManager.FindByIdAsync(id);
@@ -86,7 +85,7 @@ namespace HieuEMart.Areas.Admin.Controllers
             existingUser.UserName = user.UserName;
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
-            existingUser.RoleId = user.RoleId; // Lưu RoleId vào cột RoleId
+            existingUser.RoleId = user.RoleId;
 
             var updateUserResult = await _userManager.UpdateAsync(existingUser);
             if (!updateUserResult.Succeeded)

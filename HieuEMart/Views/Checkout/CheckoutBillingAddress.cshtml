@@ -24,19 +24,28 @@
                         <div class="invalid-feedback">Vui lòng nhập địa chỉ cụ thể.</div>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="Ward" class="form-label">Ấp/Phường</label>
-                        <input type="text" id="Ward" name="Ward" class="form-control" placeholder="Nhập ấp/phường" required>
-                        <div class="invalid-feedback">Vui lòng nhập ấp/phường.</div>
+                        <label for="Province" class="form-label">Tỉnh/Thành phố</label>
+                        <select id="Province" class="form-control" required onchange="fetchDistricts(this.value)">
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                        </select>
+                        <input type="hidden" id="ProvinceName" name="Province" />
+                        <div class="invalid-feedback">Vui lòng chọn Tỉnh/Thành phố.</div>
                     </div>
                     <div class="form-group mb-3">
                         <label for="District" class="form-label">Xã/Quận/Huyện</label>
-                        <input type="text" id="District" name="District" class="form-control" placeholder="Nhập xã/quận/huyện" required>
-                        <div class="invalid-feedback">Vui lòng nhập xã/quận/huyện.</div>
+                        <select id="District" class="form-control" required onchange="fetchWards(this.value)">
+                            <option value="">Chọn Xã/Quận/Huyện</option>
+                        </select>
+                        <input type="hidden" id="DistrictName" name="District" />
+                        <div class="invalid-feedback">Vui lòng chọn Xã/Quận/Huyện.</div>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="Province" class="form-label">Tỉnh/Thành phố</label>
-                        <input type="text" id="Province" name="Province" class="form-control" placeholder="Nhập tỉnh/thành phố" required>
-                        <div class="invalid-feedback">Vui lòng nhập tỉnh/thành phố.</div>
+                        <label for="Ward" class="form-label">Ấp/Phường</label>
+                        <select id="Ward" class="form-control" required onchange="setWardName(this)">
+                            <option value="">Chọn Ấp/Phường</option>
+                        </select>
+                        <input type="hidden" id="WardName" name="Ward" />
+                        <div class="invalid-feedback">Vui lòng chọn Ấp/Phường.</div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Xác nhận thanh toán</button>
                 </form>
@@ -44,3 +53,91 @@
         </div>
     </div>
 </div>
+<script>
+    // Fetch Tỉnh/Thành phố
+    async function fetchProvinces() {
+        try {
+            const response = await fetch("https://provinces.open-api.vn/api/p/");
+            const provinces = await response.json();
+
+            const provinceSelect = document.getElementById("Province");
+            provinces.forEach(province => {
+                const option = document.createElement("option");
+                option.value = province.code;
+                option.textContent = province.name;
+                provinceSelect.appendChild(option);
+            });
+
+            // Cập nhật hidden input khi chọn Tỉnh/Thành phố
+            provinceSelect.addEventListener("change", function () {
+                const selectedOption = provinceSelect.options[provinceSelect.selectedIndex];
+                document.getElementById("ProvinceName").value = selectedOption.textContent;
+            });
+        } catch (error) {
+            console.error("Error fetching provinces:", error);
+        }
+    }
+
+    // Fetch Quận/Huyện
+    async function fetchDistricts(provinceCode) {
+        if (!provinceCode) return;
+
+        try {
+            const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+            const data = await response.json();
+            const districts = data.districts;
+
+            const districtSelect = document.getElementById("District");
+            districtSelect.innerHTML = '<option value="">Chọn Xã/Quận/Huyện</option>';
+            document.getElementById("Ward").innerHTML = '<option value="">Chọn Ấp/Phường</option>';
+
+            districts.forEach(district => {
+                const option = document.createElement("option");
+                option.value = district.code;
+                option.textContent = district.name;
+                districtSelect.appendChild(option);
+            });
+
+            // Cập nhật hidden input khi chọn Quận/Huyện
+            districtSelect.addEventListener("change", function () {
+                const selectedOption = districtSelect.options[districtSelect.selectedIndex];
+                document.getElementById("DistrictName").value = selectedOption.textContent;
+            });
+        } catch (error) {
+            console.error("Error fetching districts:", error);
+        }
+    }
+
+    // Fetch Ấp/Phường
+    async function fetchWards(districtCode) {
+        if (!districtCode) return;
+
+        try {
+            const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+            const data = await response.json();
+            const wards = data.wards;
+
+            const wardSelect = document.getElementById("Ward");
+            wardSelect.innerHTML = '<option value="">Chọn Ấp/Phường</option>';
+
+            wards.forEach(ward => {
+                const option = document.createElement("option");
+                option.value = ward.code;
+                option.textContent = ward.name;
+                wardSelect.appendChild(option);
+            });
+
+            // Cập nhật hidden input khi chọn Ấp/Phường
+            wardSelect.addEventListener("change", function () {
+                const selectedOption = wardSelect.options[wardSelect.selectedIndex];
+                document.getElementById("WardName").value = selectedOption.textContent;
+            });
+        } catch (error) {
+            console.error("Error fetching wards:", error);
+        }
+    }
+
+    // Gọi hàm để tải danh sách Tỉnh/Thành phố khi trang được tải
+    document.addEventListener("DOMContentLoaded", fetchProvinces);
+
+</script>

@@ -1,14 +1,10 @@
-﻿using HieuEMart.Repository;
-using iText.Kernel.Pdf; 
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using iText.IO.Font.Constants;
+﻿using HieuEMart.Models;
+using HieuEMart.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using iText.IO.Font;
-using iText.Kernel.Font;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
 
 namespace HieuEMart.Areas.Admin.Controllers
 {
@@ -20,9 +16,22 @@ namespace HieuEMart.Areas.Admin.Controllers
         public OrderController(DataContext context) {
             _dataContext = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg = 1)
         {
-            return View(await _dataContext.Orders.OrderByDescending(p => p.Id).ToListAsync());
+            List<OrderModel> order = _dataContext.Orders.ToList();
+
+            const int pageSize = 10;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            int rescCount = order.Count();
+            var pager = new Paginate(rescCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = order.Skip(recSkip).Take(pager.PageSize).ToList();
+            ViewBag.Pager = pager;
+            return View(data);
         }
        
         [HttpPost]
@@ -90,6 +99,7 @@ namespace HieuEMart.Areas.Admin.Controllers
             var billingAddress = await _dataContext.BillingAddresses
                 .FirstOrDefaultAsync(b => b.OrderId == order.Id);
 
+            ViewData["OrderCode"] = ordercode;
             ViewData["BillingAddress"] = billingAddress;
 
             return View(detailsOrder);
@@ -99,85 +109,127 @@ namespace HieuEMart.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportOrderToPdf(string ordercode)
         {
-            if (string.IsNullOrWhiteSpace(ordercode))
+            try
             {
-                Console.WriteLine("OrderCode is null or empty.");
-                return BadRequest("Mã đơn hàng không hợp lệ.");
-            }
+                var detailsOrder = await _dataContext.OrderDetails
+                    .Include(o => o.Product)
+                    .Where(o => o.OrderCode == ordercode)
+                    .ToListAsync();
 
-            ordercode = ordercode.Trim();
-            Console.WriteLine($"OrderCode received: {ordercode}");
+                var order = await _dataContext.Orders
+                    .FirstOrDefaultAsync(o => o.OrderCode == ordercode);
 
-            var order = await _dataContext.Orders
-                .FirstOrDefaultAsync(o => o.OrderCode.Equals(ordercode, StringComparison.OrdinalIgnoreCase));
+                var billingAddress = await _dataContext.BillingAddresses
+                    .FirstOrDefaultAsync(b => b.OrderId == order.Id);
 
-            if (order == null)
-            {
-                Console.WriteLine("Order not found.");
-                return NotFound($"Không tìm thấy đơn hàng với mã: {ordercode}");
-            }
+                // Tạo tài liệu PDF
+                var document = new PdfDocument();
+                var page = document.AddPage();
+                var gfx = XGraphics.FromPdfPage(page);
 
-            var orderDetails = await _dataContext.OrderDetails
-                .Include(o => o.Product)
-                .Where(o => o.OrderCode.Equals(ordercode, StringComparison.OrdinalIgnoreCase))
-                .ToListAsync();
+                // Thiết lập font chữ
+                var titleFont = new XFont("Arial", 20, XFontStyle.Bold);
+                var contentFont = new XFont("Arial", 12, XFontStyle.Regular);
+                var headerFont = new XFont("Arial", 12, XFontStyle.Bold);
 
-            if (!orderDetails.Any())
-            {
-                Console.WriteLine("OrderDetails not found.");
-                return NotFound($"Không tìm thấy thông tin chi tiết đơn hàng với mã: {ordercode}");
-            }
+                // Vẽ tiêu đề
+                gfx.DrawString("Thông Tin Đơn Hàng", titleFont, XBrushes.Black, new XRect(0, 40, page.Width, 40), XStringFormats.TopCenter);
+                gfx.DrawString($"Mã Đơn Hàng: {ordercode}", contentFont, XBrushes.Black, new XRect(0, 80, page.Width, 20), XStringFormats.TopCenter);
 
-            var billingAddress = await _dataContext.BillingAddresses
-                .FirstOrDefaultAsync(b => b.OrderId == order.Id);
+                // Vẽ thông tin khách hàng
+                gfx.DrawString("Thông Tin Khách Hàng:", headerFont, XBrushes.Black, new XRect(40, 120, page.Width, 20), XStringFormats.TopLeft);
+                gfx.DrawString($"- Họ và Tên: {billingAddress.FullName}", contentFont, XBrushes.Black, new XRect(60, 140, page.Width, 20), XStringFormats.TopLeft);
+                gfx.DrawString($"- Số Điện Thoại: {billingAddress.PhoneNumber}", contentFont, XBrushes.Black, new XRect(60, 160, page.Width, 20), XStringFormats.TopLeft);
+                gfx.DrawString($"- Địa Chỉ: {billingAddress.SpecificAddress}, {billingAddress.Ward}, {billingAddress.District}, {billingAddress.Province}", contentFont, XBrushes.Black, new XRect(60, 180, page.Width, 40), XStringFormats.TopLeft);
 
-            if (billingAddress == null)
-            {
-                Console.WriteLine("BillingAddress not found.");
-                return NotFound($"Không tìm thấy địa chỉ thanh toán cho đơn hàng với mã: {ordercode}");
-            }
+                // Vẽ bảng chi tiết sản phẩm
+                double yOffset = 240;
 
-            using (var memoryStream = new MemoryStream())
-            {
-                var writer = new PdfWriter(memoryStream);
-                var pdf = new PdfDocument(writer);
-                var document = new Document(pdf);
+                // Header của bảng
+                gfx.DrawRectangle(XBrushes.LightGray, 40, yOffset - 20, page.Width - 80, 20);
+                gfx.DrawString("Tên Sản Phẩm", headerFont, XBrushes.Black, new XRect(50, yOffset - 18, 150, 20), XStringFormats.TopLeft);
+                gfx.DrawString("Số Lượng", headerFont, XBrushes.Black, new XRect(250, yOffset - 18, 100, 20), XStringFormats.TopLeft);
+                gfx.DrawString("Giá Sản Phẩm", headerFont, XBrushes.Black, new XRect(350, yOffset - 18, 100, 20), XStringFormats.TopLeft);
+                gfx.DrawString("Tổng", headerFont, XBrushes.Black, new XRect(450, yOffset - 18, 100, 20), XStringFormats.TopLeft);
 
-                document.Add(new Paragraph("Thông Tin Đơn Hàng").SetFontSize(20).SetTextAlignment(TextAlignment.CENTER));
-                document.Add(new Paragraph($"Mã Đơn Hàng: {ordercode}").SetTextAlignment(TextAlignment.CENTER));
-                document.Add(new Paragraph("\n"));
-
-                document.Add(new Paragraph("Thông Tin Khách Hàng:"));
-                document.Add(new Paragraph($"- Họ và Tên: {billingAddress.FullName}"));
-                document.Add(new Paragraph($"- Số Điện Thoại: {billingAddress.PhoneNumber}"));
-                document.Add(new Paragraph($"- Địa Chỉ: {billingAddress.SpecificAddress}, {billingAddress.Ward}, {billingAddress.District}, {billingAddress.Province}"));
-
-                var table = new Table(5).UseAllAvailableWidth();
-                table.AddHeaderCell("Tên Sản Phẩm");
-                table.AddHeaderCell("Giá Sản Phẩm");
-                table.AddHeaderCell("Số Lượng");
-                table.AddHeaderCell("Tổng");
+                yOffset += 20;
 
                 decimal total = 0;
-                foreach (var item in orderDetails)
+
+                // Duyệt qua từng sản phẩm
+                foreach (var item in detailsOrder)
                 {
                     decimal subtotal = item.Quantity * item.Price;
                     total += subtotal;
 
-                    table.AddCell(item.Product.Name);
-                    table.AddCell(item.Price.ToString("N0"));
-                    table.AddCell(item.Quantity.ToString());
-                    table.AddCell(subtotal.ToString("N0"));
+                    // Chia tên sản phẩm thành nhiều dòng
+                    var productNameLines = SplitText(item.Product.Name, contentFont, 150, gfx);
+                    double lineOffset = 0;
+
+                    // Vẽ từng dòng của tên sản phẩm
+                    foreach (var line in productNameLines)
+                    {
+                        gfx.DrawString(line, contentFont, XBrushes.Black, new XRect(50, yOffset + lineOffset, 150, 20), XStringFormats.TopLeft);
+                        lineOffset += 20;
+                    }
+
+                    // Vẽ các cột khác
+                    gfx.DrawString(item.Quantity.ToString(), contentFont, XBrushes.Black, new XRect(250, yOffset, 100, 20), XStringFormats.TopLeft);
+                    gfx.DrawString(item.Price.ToString("N0"), contentFont, XBrushes.Black, new XRect(350, yOffset, 100, 20), XStringFormats.TopLeft);
+                    gfx.DrawString(subtotal.ToString("N0"), contentFont, XBrushes.Black, new XRect(450, yOffset, 100, 20), XStringFormats.TopLeft);
+
+                    // Tăng yOffset dựa trên chiều cao thực tế của các dòng
+                    yOffset += Math.Max(lineOffset, 20);
                 }
 
-                table.AddFooterCell("Tổng Cộng:");
-                table.AddFooterCell(total.ToString("N0"));
+                // Tổng cộng
+                yOffset += 20;
+                gfx.DrawString("Tổng Cộng:", headerFont, XBrushes.Black, new XRect(350, yOffset + 10, 100, 20), XStringFormats.TopLeft);
+                gfx.DrawString(total.ToString("N0"), headerFont, XBrushes.Black, new XRect(450, yOffset + 10, 100, 20), XStringFormats.TopLeft);
 
-                document.Add(table);
-                document.Close();
-
-                return File(memoryStream.ToArray(), "application/pdf", $"Order_{ordercode}.pdf");
+                // Xuất PDF ra file
+                using (var stream = new MemoryStream())
+                {
+                    document.Save(stream, false);
+                    return File(stream.ToArray(), "application/pdf", $"Order_{ordercode}.pdf");
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Hàm chia chuỗi dài thành nhiều dòng
+        private static List<string> SplitText(string text, XFont font, double maxWidth, XGraphics gfx)
+        {
+            var lines = new List<string>();
+            var words = text.Split(' ');
+            string currentLine = "";
+
+            foreach (var word in words)
+            {
+                string testLine = string.IsNullOrEmpty(currentLine) ? word : $"{currentLine} {word}";
+                var size = gfx.MeasureString(testLine, font);
+
+                if (size.Width > maxWidth)
+                {
+                    lines.Add(currentLine);
+                    currentLine = word;
+                }
+                else
+                {
+                    currentLine = testLine;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(currentLine))
+            {
+                lines.Add(currentLine);
+            }
+
+            return lines;
         }
     }
 }

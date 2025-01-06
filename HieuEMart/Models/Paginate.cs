@@ -2,18 +2,18 @@
 {
     public class Paginate
     {
-        public int TotalItems { get; private set; } //tổng số items
-        public int PageSize { get; private set; } //tổng số item/trang
-        public int CurrentPage { get; private set; } //trang hiện tại
+        public int TotalItems { get; private set; }
+        public int PageSize { get; private set; }
+        public int CurrentPage { get; private set; }
 
-        public int TotalPages { get; private set; } //tổng trang
-        public int StartPage { get; private set; } //trang bắt đầu
-        public int EndPage { get; private set; } //trang kết thúc
+        public int TotalPages { get; private set; }
+        public int StartPage { get; private set; }
+        public int EndPage { get; private set; } 
         public Paginate()
         {
 
         }
-        public Paginate(int totalItems, int page, int pageSize = 10) //10 items/trang
+        public Paginate(int totalItems, int page, int pageSize = 10)
         {
             //làm tròn tổng items/10 items trên 1 trang VD:16 items/10 = tròn 3 trang
             int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize); //33/10 = 3.3 4 trang

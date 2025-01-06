@@ -52,10 +52,10 @@ namespace HieuEMart.Controllers
 				IdentityResult result = await _userManager.CreateAsync(newUser, user.Password);
 				if (result.Succeeded)
 				{
-					string roleId = "C3BB5327-2A05-4FB6-BABC-E406556939AA";
-                    var role = await _roleManager.FindByIdAsync(roleId);
+					//string roleId = "C3BB5327-2A05-4FB6-BABC-E406556939AA";
+     //               var role = await _roleManager.FindByIdAsync(roleId);
                     TempData["success"] = "Tạo tài khoản thành công";
-                    await _userManager.AddToRoleAsync(newUser, role.Name);
+                    //await _userManager.AddToRoleAsync(newUser, role.Name);
                     return Redirect("/account/login");
 				}
 

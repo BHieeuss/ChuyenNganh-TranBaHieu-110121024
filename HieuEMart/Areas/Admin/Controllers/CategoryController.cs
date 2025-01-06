@@ -25,7 +25,7 @@ namespace HieuEMart.Areas.Admin.Controllers
             {
                 pg = 1;
             }
-            int rescCount = category.Count(); //Đếm item
+            int rescCount = category.Count();
             var pager = new Paginate(rescCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
             var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
