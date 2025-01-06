@@ -19,9 +19,14 @@ namespace HieuEMart.Controllers
 
         public IActionResult Index()
         {
-            var products = _dataContext.Products.Include("Category").Include("Brand").ToList();
-            return View(products);
-        }
+			var randomProducts = _dataContext.Products
+									  .Include("Category")
+									  .Include("Brand")
+									  .OrderBy(p => Guid.NewGuid())
+									  .Take(6) 
+									  .ToList();
+			return View(randomProducts);
+		}
 
         public IActionResult Privacy()
         {
